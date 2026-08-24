@@ -17,6 +17,8 @@ name: Publish to npm
 on:
   release:
     types: [published]
+  push:
+    tags: ["v*"]          # git tag v1.0.2 && git push --tags
   workflow_dispatch:
     inputs:
       dry_run:
