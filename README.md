@@ -6,9 +6,10 @@ Grade any website for **AI-agent readiness** from your terminal — the same eng
 npx aiscan-cli example.com      # or: npx @aiscan/cli example.com
 ```
 
-No install, no dependencies, Node 18+. Prefer no npm at all? `curl -fsSL https://aiscan.site/cli.mjs | node - example.com`.
+No install, no dependencies, Node 18+. Using it often? `npm i -g aiscan-cli`, then just `aiscan example.com`. No npm available (minimal CI images)? Fall back to `curl -fsSL https://aiscan.site/cli.mjs | node - example.com`.
 
 On Node < 18 the CLI cannot run: upgrade Node (<https://nodejs.org>, or `nvm install 18 && nvm use 18`), scan in the browser at <https://aiscan.site>, or use the REST API.
+
 
 ## What it checks
 
