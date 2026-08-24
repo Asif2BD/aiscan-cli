@@ -1,0 +1,37 @@
+{
+  "name": "aiscan-cli",
+  "version": "1.0.1",
+  "description": "Grade any website for AI-agent readiness (ChatGPT, Claude, Perplexity) from your terminal. Zero dependencies, CI-friendly.",
+  "type": "module",
+  "bin": {
+    "aiscan": "bin/aiscan.mjs"
+  },
+  "files": [
+    "bin/aiscan.mjs",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "llms-txt",
+    "robots-txt",
+    "seo",
+    "mcp",
+    "aeo",
+    "agent-ready",
+    "cli"
+  ],
+  "homepage": "https://aiscan.site/docs/cli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Asif2BD/aiscan-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Asif2BD/aiscan-cli/issues"
+  },
+  "license": "MIT",
+  "author": "AIScan (https://aiscan.site)"
+}

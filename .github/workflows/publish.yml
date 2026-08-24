@@ -1,0 +1,82 @@
+# Publish aiscan-cli and @aiscan/cli to npm using OIDC trusted publishing.
+#
+# No NPM_TOKEN, no OTP, no passkey. npm verifies this workflow's identity
+# directly via GitHub's OIDC provider, so nothing secret is stored anywhere.
+#
+# Prerequisites (one-time, on npmjs.com for EACH package):
+#   Package -> Settings -> Trusted Publisher -> GitHub Actions
+#     Organization or user : Asif2BD
+#     Repository           : aiscan-cli
+#     Workflow filename    : publish.yml
+#
+# To cut a release: bump "version" in package.json, commit, then publish a
+# GitHub Release with a matching tag (e.g. v1.0.2).
+
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Pack only, publish nothing"
+        type: boolean
+        default: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write        # required: lets npm verify this workflow via OIDC
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      # Trusted publishing needs npm >= 11.5.1; runners ship older.
+      - name: Use an npm that supports trusted publishing
+        run: |
+          npm install -g npm@latest
+          npm --version
+
+      - name: Verify the version is not already published
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          echo "Releasing $NAME@$VER"
+          if npm view "$NAME@$VER" version >/dev/null 2>&1; then
+            echo "::error::$NAME@$VER is already on npm. Bump the version in package.json."
+            exit 1
+          fi
+
+      - name: Smoke-test the CLI before shipping it
+        run: |
+          node bin/aiscan.mjs -v
+          node bin/aiscan.mjs aiscan.site --quiet
+
+      - name: Publish aiscan-cli
+        run: npm publish --access public ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      # Same code, scoped name. Staged in a temp dir so the source is never
+      # duplicated in the repo.
+      - name: Stage @aiscan/cli
+        run: |
+          rm -rf .publish && mkdir -p .publish/bin
+          cp bin/aiscan.mjs .publish/bin/aiscan.mjs
+          cp README.md .publish/README.md
+          cp LICENSE .publish/LICENSE
+          node -e "
+            const p = require('./package.json');
+            p.name = '@aiscan/cli';
+            require('fs').writeFileSync('.publish/package.json', JSON.stringify(p, null, 2) + '\n');
+          "
+          cat .publish/package.json
+
+      - name: Publish @aiscan/cli
+        working-directory: .publish
+        run: npm publish --access public ${{ inputs.dry_run && '--dry-run' || '' }}
