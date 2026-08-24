@@ -30,7 +30,7 @@ SRC="$TMP/up/cli"
 # Upstream package.json is the aiscan-cli manifest, but THIS repo owns the
 # repository/bugs fields (they point here). Only the CLI source and README sync.
 DRIFT=0
-for F in bin/aiscan.mjs README.md; do
+for F in bin/aiscan.mjs README.md CLAUDE.md; do
   if ! diff -q "$SRC/$F" "$HERE/$F" >/dev/null 2>&1; then
     echo "  drift: $F"
     DRIFT=1
