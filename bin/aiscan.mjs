@@ -9,7 +9,7 @@
  */
 
 // Keep in sync with cli/package.json — scripts/sync-cli.mjs fails the build on drift.
-const VERSION = "1.0.1";
+const VERSION = "1.0.2";
 
 // Fail fast (and readably) on Node < 18 — we rely on global fetch.
 {

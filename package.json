@@ -1,6 +1,6 @@
 {
   "name": "aiscan-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Grade any website for AI-agent readiness (ChatGPT, Claude, Perplexity) from your terminal. Zero dependencies, CI-friendly.",
   "type": "module",
   "bin": {
