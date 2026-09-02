@@ -9,7 +9,7 @@
  */
 
 // Keep in sync with cli/package.json — scripts/sync-cli.mjs fails the build on drift.
-const VERSION = "1.0.2";
+const VERSION = "1.0.3";
 
 // Fail fast (and readably) on Node < 18 — we rely on global fetch.
 {
@@ -182,7 +182,13 @@ ${bold("PLANS")}
 // ------------------------------------------------------------------- api ---
 async function scan(url, opts) {
   const endpoint = new URL(`${API_BASE}/api/public/v1/scan`);
-  const headers = { "content-type": "application/json", accept: "application/json" };
+  // The server classifies telemetry surface from this UA. Without it every
+  // CLI scan is indistinguishable from a raw API call.
+  const headers = {
+    "content-type": "application/json",
+    accept: "application/json",
+    "user-agent": `aiscan-cli/${VERSION} (+https://aiscan.site)`,
+  };
   if (opts.key) headers.authorization = `Bearer ${opts.key}`;
   const body = { url, fresh: opts.fresh, scope: opts.scope };
   if (typeof opts.isPublic === "boolean") body.isPublic = opts.isPublic;
